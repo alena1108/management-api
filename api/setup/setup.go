@@ -8,6 +8,7 @@ import (
 	machineconfig "github.com/rancher/machine-controller/store/config"
 	"github.com/rancher/management-api/api/authn"
 	"github.com/rancher/management-api/api/catalog"
+	"github.com/rancher/management-api/api/cluster"
 	"github.com/rancher/management-api/api/machine"
 	"github.com/rancher/management-api/api/project"
 	"github.com/rancher/management-api/api/setting"
@@ -53,6 +54,7 @@ func Schemas(ctx context.Context, management *config.ManagementContext, schemas 
 		return err
 	}
 	MachineTypes(schemas, management, secretStore)
+	ClusterTypes(schemas)
 
 	crdStore, err := crd.NewCRDStoreFromConfig(management.RESTConfig)
 	if err != nil {
@@ -219,4 +221,9 @@ func Stack(schemas *types.Schemas, management *config.ManagementContext) {
 func Setting(schemas *types.Schemas) {
 	schema := schemas.Schema(&managementschema.Version, client.SettingType)
 	schema.Formatter = setting.Formatter
+}
+
+func ClusterTypes(schemas *types.Schemas) {
+	schema := schemas.Schema(&managementschema.Version, client.ClusterType)
+	schema.Validator = cluster.Validator
 }
